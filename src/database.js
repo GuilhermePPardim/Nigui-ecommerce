@@ -36,4 +36,28 @@ const db = new sqlite3.Database(dbPath, (err) => {
     }
 });
 
+db.getAsync = function(sql, params = []) {
+    return new Promise((resolve, reject) => {
+        this.get(sql, params, (err, row) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+};
+
+
+db.runAsync = function(sql, params = []) {
+    return new Promise((resolve, reject) => {
+        this.run(sql, params, function(err) { 
+            if (err) {
+                reject(err);
+            } else {
+                resolve(this.lastID); 
+            }
+        });
+    });
+};
 module.exports = db;
