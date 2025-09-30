@@ -70,8 +70,22 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/products', async (req, res) =>{
-    
-})
+    try {
+        const products = await new Promise((resolve, reject) =>{
+            db.all('SELECT * FROM products', [], (err, rows) =>{
+                if (err) reject(err);
+                resolve(rows);
+            });
+        });
+        res.json(products);
+    }catch (error){
+        console.error('ERRO de listar produtos', error.message);
+        res.status(500).json({massage:'erro interno no servidor.'});
+    }
+});
+
+
+
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
