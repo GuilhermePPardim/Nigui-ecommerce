@@ -104,7 +104,36 @@ app.post('/api/products', authenticateToken, authorizeRole('admin'), async(req, 
 
     }
 });
+app.put('/api/products/:id', authenticateToken, authorizeRole('admin'),async (req, res)=> {
+    const{id} = req.params;
+    const {name, description, price, stock, image_url} = req.body;
 
+    if(!name || !price){
+        return res.status(400).json({massage: 'Nome e preço são obrigatorios'});
+    }
+    try{
+        await db.runAsync(
+            'UPDATE products SET name = ?, description = ?, price = ?, stock = ?, image_url = ? WHERE id = ?',
+            [name, description, price, stock, image_url, id]
+        );
+        res.json({massage: 'Produto atualizado com sucessso! '});
+    }catch(error){
+        console.error('Erro ao atualizar produto: ', error.massage);
+        res.status(500).json({massage: 'erro interno do servidor'});
+    }
+
+});
+app.delete('/api/products/:id', authenticateToken, authorizeRole('admin'),async (req, res)=> {
+    const{id} = req.params;
+
+     try {
+        await db.runAsync('DELETE FROM products WHERE id = ?', [id]);
+        res.json({ message: 'Produto apagado com sucesso!' });
+    } catch (error) {
+        console.error('Erro ao apagar produto:', error.message);
+        res.status(500).json({ message: 'Erro interno do servidor.' });
+    }
+});
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
