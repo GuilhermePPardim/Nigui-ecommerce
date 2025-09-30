@@ -85,6 +85,25 @@ app.get('/api/products', async (req, res) =>{
 });
 
 
+app.post('/api/products', authenticateToken, authorizeRole('admin'), async(req, res) =>{
+    const{name, description, price, stock, image_url} = req.body;
+
+    if (!name || price){
+        return res.status(400).json({massage: 'Nome e preço são obrigatorios'});
+    }
+    try{
+        const lastID = await db.runAsync(
+            'INSERT INTO products(name, description, price, stock, imagem_url)' VAlUES (?, ?, ?, ?, ?)
+            [name, description, price, stock || 0, image_url]
+        );
+        res.status(201).json({massage: 'Produto adicionado com sucesso!', products: lastID});
+
+    } catch(error){
+        console.log('ERRO ao adicionar produto: ', error.massage);
+        res.status(500).json({massage: 'ERRO interno no servidor. '});
+
+    }
+});
 
 
 app.listen(PORT, () => {
