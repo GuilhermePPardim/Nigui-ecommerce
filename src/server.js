@@ -68,6 +68,11 @@ app.post('/api/login', async (req, res) => {
 app.get('/', (req, res) => {
     res.send('Bem-vindo à TechStore API!');
 });
+
+app.get('/api/products', async (req, res) =>{
+    
+})
+
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
     console.log(`Acesse: http://localhost:${PORT}`);
