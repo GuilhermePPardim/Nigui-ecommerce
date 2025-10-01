@@ -33,7 +33,7 @@ app.post('/api/register', async (req, res) => {
 
     } catch (error) {
         console.error('Erro ao registrar usuário:', error.message);
-        res.status(500).json({ message: 'Erro interno do servidor.' });'message'
+        res.status(500).json({ message: 'Erro interno do servidor.' });
     }
 });
 
@@ -80,7 +80,7 @@ app.get('/api/products', async (req, res) =>{
         res.json(products);
     }catch (error){
         console.error('ERRO de listar produtos', error.message);
-        res.status(500).json({massage:'erro interno no servidor.'});
+        res.status(500).json({message:'erro interno no servidor.'});
     }
 });
 
@@ -88,19 +88,19 @@ app.get('/api/products', async (req, res) =>{
 app.post('/api/products', authenticateToken, authorizeRole('admin'), async(req, res) =>{
     const{name, description, price, stock, image_url} = req.body;
 
-    if (!name || price){
-        return res.status(400).json({massage: 'Nome e preço são obrigatorios'});
+    if (!name || !price){
+        return res.status(400).json({message: 'Nome e preço são obrigatorios'});
     }
     try{
         const lastID = await db.runAsync(
-            'INSERT INTO products(name, description, price, stock, imagem_url)' VAlUES (?, ?, ?, ?, ?)
+            'INSERT INTO products(name, description, price, stock, image_url) VALUES (?, ?, ?, ?, ?)',
             [name, description, price, stock || 0, image_url]
         );
-        res.status(201).json({massage: 'Produto adicionado com sucesso!', products: lastID});
+        res.status(201).json({message: 'Produto adicionado com sucesso!', productsID: lastID});
 
     } catch(error){
         console.log('ERRO ao adicionar produto: ', error.massage);
-        res.status(500).json({massage: 'ERRO interno no servidor. '});
+        res.status(500).json({message: 'ERRO interno no servidor. '});
 
     }
 });
@@ -109,17 +109,17 @@ app.put('/api/products/:id', authenticateToken, authorizeRole('admin'),async (re
     const {name, description, price, stock, image_url} = req.body;
 
     if(!name || !price){
-        return res.status(400).json({massage: 'Nome e preço são obrigatorios'});
+        return res.status(400).json({message: 'Nome e preço são obrigatorios'});
     }
     try{
         await db.runAsync(
             'UPDATE products SET name = ?, description = ?, price = ?, stock = ?, image_url = ? WHERE id = ?',
             [name, description, price, stock, image_url, id]
         );
-        res.json({massage: 'Produto atualizado com sucessso! '});
+        res.json({message: 'Produto atualizado com sucessso! '});
     }catch(error){
-        console.error('Erro ao atualizar produto: ', error.massage);
-        res.status(500).json({massage: 'erro interno do servidor'});
+        console.error('Erro ao atualizar produto: ', error.message);
+        res.status(500).json({message: 'erro interno do servidor'});
     }
 
 });
